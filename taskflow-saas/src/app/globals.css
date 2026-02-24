@@ -1,0 +1,14 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Custom CSS variables for colors etc.  You can extend tailwind config for a
+   richer palette if desired. */
+
+html {
+  min-height: 100%;
+}
+
+body {
+  @apply text-gray-800 dark:text-gray-100 bg-gray-100 dark:bg-gray-900;
+}
