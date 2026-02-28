@@ -1,0 +1,5 @@
+{
+  "name": "Kodesk Dashboard",
+  "description": "A modern, high-performance task management dashboard with Kanban boards, list views, and Supabase integration.",
+  "requestFramePermissions": []
+}
