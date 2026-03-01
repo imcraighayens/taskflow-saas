@@ -232,3 +232,60 @@ export function resetUserPassword(id: string, newPassword: string): { success: b
   saveAuthUsers(all);
   return { success: true };
 }
+
+// ── Company Registration (sign-up) ──
+export function registerCompany(data: {
+  companyName: string;
+  adminName: string;
+  email: string;
+  password: string;
+  plan?: Company['plan'];
+}): { success: boolean; error?: string; user?: User } {
+  // Validate
+  if (!data.companyName.trim()) return { success: false, error: 'Company name is required.' };
+  if (!data.adminName.trim()) return { success: false, error: 'Your name is required.' };
+  if (!data.email.trim()) return { success: false, error: 'Email is required.' };
+  if (data.password.length < 6) return { success: false, error: 'Password must be at least 6 characters.' };
+
+  // Extract domain from email
+  const domain = data.email.split('@')[1] || '';
+  if (!domain) return { success: false, error: 'Please use a valid email address.' };
+
+  // Create company
+  const companyId = 'org_' + Date.now().toString(36) + Math.random().toString(36).slice(2, 6);
+  const company: Company = {
+    id: companyId,
+    name: data.companyName.trim(),
+    domain,
+    plan: data.plan || 'starter',
+    createdAt: new Date().toISOString().slice(0, 10),
+  };
+  localStorage.setItem(KEYS.company, JSON.stringify(company));
+
+  // Build initials
+  const initials = data.adminName.trim()
+    .split(' ')
+    .map(w => w[0])
+    .join('')
+    .toUpperCase()
+    .slice(0, 2) || data.adminName.slice(0, 2).toUpperCase();
+
+  // Create the founding admin
+  const adminUser: AuthUser = {
+    id: 'u_' + Date.now().toString(36) + Math.random().toString(36).slice(2, 6),
+    name: data.adminName.trim(),
+    email: data.email.toLowerCase().trim(),
+    password: data.password,
+    role: 'admin',
+    status: 'active',
+    initials,
+    department: 'Management',
+    joinedAt: new Date().toISOString().slice(0, 10),
+  };
+
+  // Replace the user store with just this admin (fresh company)
+  saveAuthUsers([adminUser]);
+
+  const { password: _, ...user } = adminUser;
+  return { success: true, user };
+}
