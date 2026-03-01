@@ -7,6 +7,17 @@ export interface User {
   lastActive?: string;
   avatar?: string;
   initials: string;
+  department?: string;
+  joinedAt?: string;
+}
+
+export interface Company {
+  id: string;
+  name: string;
+  domain: string;
+  logo?: string;
+  plan: 'starter' | 'pro' | 'enterprise';
+  createdAt: string;
 }
 
 export interface Task {

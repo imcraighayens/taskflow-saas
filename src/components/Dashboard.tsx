@@ -6,6 +6,7 @@ import ListView from './dashboard/ListView';
 import OverviewView from './dashboard/OverviewView';
 import MarketplaceView from './dashboard/MarketplaceView';
 import DatabaseView from './dashboard/DatabaseView';
+import UserManagement from './dashboard/UserManagement';
 import TaskModal from './dashboard/TaskModal';
 import RightPanel from './dashboard/RightPanel';
 import StatsGrid from './dashboard/StatsGrid';
@@ -331,23 +332,24 @@ export default function Dashboard({ currentUser, onLogout }: DashboardProps) {
           <div className="flex items-center justify-between mb-6">
             <div className="flex items-center gap-3.5">
               <div className="w-11 h-11 rounded-xl bg-[#1B1F2A] border border-white/5 flex items-center justify-center text-xl shadow-sm">
-                {view === 'board' ? '📋' : view === 'list' ? '☰' : view === 'overview' ? '◎' : view === 'marketplace' ? '🛍' : '🗄'}
+                {view === 'board' ? '📋' : view === 'list' ? '☰' : view === 'overview' ? '◎' : view === 'marketplace' ? '🛍' : view === 'users' ? '👥' : '🗄'}
               </div>
               <div>
                 <h1 className="text-2xl font-extrabold tracking-tight text-white leading-none mb-1">
-                  {view === 'marketplace' ? 'Marketplace' : view === 'database' ? 'Database' : view.charAt(0).toUpperCase() + view.slice(1)}
+                  {view === 'marketplace' ? 'Marketplace' : view === 'database' ? 'Database' : view === 'users' ? 'Team Management' : view.charAt(0).toUpperCase() + view.slice(1)}
                 </h1>
                 <p className="text-[12.5px] text-[#8B93A7]">
-                  {view === 'board' ? 'Manage and track your tasks' : 
-                   view === 'list' ? 'All tasks in a sortable table' : 
-                   view === 'overview' ? 'Visual breakdown of project health' : 
+                  {view === 'board' ? 'Manage and track your tasks' :
+                   view === 'list' ? 'All tasks in a sortable table' :
+                   view === 'overview' ? 'Visual breakdown of project health' :
                    view === 'marketplace' ? 'Browse and install features' :
+                   view === 'users' ? 'Manage your team members and company settings' :
                    'Raw data viewer'}
                 </p>
               </div>
             </div>
-            {view !== 'marketplace' && view !== 'database' && (
-              <button 
+            {view !== 'marketplace' && view !== 'database' && view !== 'users' && (
+              <button
                 onClick={() => { setEditingTask(null); setModalInitialStatus('todo'); setIsTaskModalOpen(true); }}
                 className="flex items-center gap-1.5 px-4 py-2.5 rounded-[10px] bg-gradient-to-br from-[#4A6CF7] to-[#8B5CF6] text-white text-[13px] font-bold shadow-[0_4px_16px_rgba(74,108,247,0.35)] hover:-translate-y-px hover:shadow-[0_6px_22px_rgba(74,108,247,0.45)] transition-all"
               >
@@ -357,7 +359,7 @@ export default function Dashboard({ currentUser, onLogout }: DashboardProps) {
           </div>
 
           {/* Stats & Filters (Only for task views) */}
-          {view !== 'marketplace' && view !== 'database' && (
+          {view !== 'marketplace' && view !== 'database' && view !== 'users' && (
             <>
               {visibleWidgets.stats && <StatsGrid tasks={tasks} onFilter={setActiveFilter} />}
               <FilterBar 
@@ -414,6 +416,7 @@ export default function Dashboard({ currentUser, onLogout }: DashboardProps) {
               />
             )}
             {view === 'database' && <DatabaseView tasks={tasks} features={features} activity={activity} users={users} />}
+            {view === 'users' && <UserManagement currentUser={currentUser} />}
           </div>
         </div>
       </main>
