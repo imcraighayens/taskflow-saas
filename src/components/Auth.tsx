@@ -1,9 +1,11 @@
 import React, { useState } from 'react';
 import { motion } from 'motion/react';
+import { authenticateUser, storeUser } from '../auth';
+import { User } from '../types';
 
 interface AuthProps {
   initialView?: 'login' | 'signup';
-  onLogin: () => void;
+  onLogin: (user: User) => void;
   onNavigate: (page: 'landing') => void;
 }
 
@@ -17,24 +19,27 @@ export default function Auth({ initialView = 'login', onLogin, onNavigate }: Aut
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     setError('');
-    
+
     if (!email || !password) {
       setError('Please fill in all fields');
       return;
     }
 
     setLoading(true);
-    // Simulate API call
     setTimeout(() => {
       setLoading(false);
-      if (view === 'login' && email.includes('@') && password.length >= 4) {
-        onLogin();
-      } else if (view === 'signup' && email.includes('@') && password.length >= 8) {
-        onLogin();
+      if (view === 'login') {
+        const user = authenticateUser(email, password);
+        if (user) {
+          storeUser(user);
+          onLogin(user);
+        } else {
+          setError('Invalid email or password. Contact your admin for access.');
+        }
       } else {
-        setError(view === 'login' ? 'Invalid credentials (try demo@kodesk.app / demo)' : 'Password must be at least 8 chars');
+        setError('Sign-ups are managed by admins. Please contact your administrator.');
       }
-    }, 1200);
+    }, 800);
   };
 
   return (

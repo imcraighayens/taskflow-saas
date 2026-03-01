@@ -1,4 +1,5 @@
 import React from 'react';
+import { User } from '../../types';
 
 interface SidebarProps {
   activeView: string;
@@ -11,9 +12,11 @@ interface SidebarProps {
   counts: { [key: string]: number };
   isDark: boolean;
   onToggleTheme: () => void;
+  currentUser?: User;
+  onLogout?: () => void;
 }
 
-export default function Sidebar({ activeView, activeProject, onNavigate, onFilterProject, collapsed, onToggleCollapse, onOpenSettings, counts, isDark, onToggleTheme }: SidebarProps) {
+export default function Sidebar({ activeView, activeProject, onNavigate, onFilterProject, collapsed, onToggleCollapse, onOpenSettings, counts, isDark, onToggleTheme, currentUser, onLogout }: SidebarProps) {
   const navItems = [
     { id: 'board', label: 'Board', icon: <rect x="3" y="3" width="8" height="8" rx="1.5" /> },
     { id: 'list', label: 'List', icon: <line x1="9" y1="6" x2="20" y2="6" /> },
@@ -127,12 +130,29 @@ export default function Sidebar({ activeView, activeProject, onNavigate, onFilte
           </div>
           {!collapsed && <span className="text-[13px] font-semibold ml-2.5 truncate">Settings</span>}
         </div>
-        <div onClick={onToggleCollapse} className={`h-10 rounded-[14px] flex items-center cursor-pointer transition-all text-white/25 hover:bg-white/5 hover:text-white/70 ${collapsed ? 'w-10 justify-center' : 'w-full px-2.5'}`}>
-          <div className="w-5 h-5 shrink-0 flex items-center justify-center">
-            <svg viewBox="0 0 24 24" className="w-[19px] h-[19px] stroke-current fill-none stroke-[1.55] stroke-linecap-round stroke-linejoin-round"><path d="M15 3h6v6"/><path d="M9 21H3v-6"/><path d="M21 3l-7 7"/><path d="M3 21l7-7"/></svg>
-          </div>
-          {!collapsed && <span className="text-[13px] font-semibold ml-2.5 truncate">Toggle</span>}
-        </div>
+        {/* User info & Logout */}
+        {currentUser && (
+          <>
+            <div className={`h-px bg-white/5 my-1.5 shrink-0 transition-all ${collapsed ? 'w-[22px]' : 'w-[calc(100%-12px)] mx-auto'}`}></div>
+            <div className={`h-10 rounded-[14px] flex items-center transition-all shrink-0 ${collapsed ? 'w-10 justify-center' : 'w-full px-2.5'}`}>
+              <div className="w-6 h-6 rounded-full bg-gradient-to-br from-[#4A6CF7] to-[#8B5CF6] flex items-center justify-center text-[10px] font-extrabold text-white shrink-0">
+                {currentUser.initials}
+              </div>
+              {!collapsed && (
+                <div className="ml-2 flex-1 min-w-0">
+                  <div className="text-[12px] font-bold text-white/80 truncate">{currentUser.name}</div>
+                  <div className="text-[10px] text-white/30 truncate">{currentUser.email}</div>
+                </div>
+              )}
+            </div>
+            <div onClick={onLogout} className={`h-10 rounded-[14px] flex items-center cursor-pointer transition-all text-red-400/50 hover:bg-red-500/10 hover:text-red-400 ${collapsed ? 'w-10 justify-center' : 'w-full px-2.5'}`}>
+              <div className="w-5 h-5 shrink-0 flex items-center justify-center">
+                <svg viewBox="0 0 24 24" className="w-[19px] h-[19px] stroke-current fill-none stroke-[1.55] stroke-linecap-round stroke-linejoin-round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
+              </div>
+              {!collapsed && <span className="text-[13px] font-semibold ml-2.5 truncate">Sign Out</span>}
+            </div>
+          </>
+        )}
       </div>
     </aside>
   );

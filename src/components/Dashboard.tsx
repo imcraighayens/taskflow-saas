@@ -21,7 +21,12 @@ import ConfirmModal from './dashboard/modals/ConfirmModal';
 import { Task, Feature, Activity, User } from '../types';
 import { DEFAULT_TASKS, MP_DEFAULT, DEFAULT_ACTIVITY, DEFAULT_USERS } from '../constants';
 
-export default function Dashboard() {
+interface DashboardProps {
+  currentUser: User;
+  onLogout: () => void;
+}
+
+export default function Dashboard({ currentUser, onLogout }: DashboardProps) {
   const [view, setView] = useState('board');
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
   const [tasks, setTasks] = useState<Task[]>(DEFAULT_TASKS);
@@ -306,6 +311,8 @@ export default function Dashboard() {
         counts={counts}
         isDark={isDark}
         onToggleTheme={handleToggleTheme}
+        currentUser={currentUser}
+        onLogout={onLogout}
       />
       
       <main className={`flex-1 flex flex-col min-w-0 transition-all duration-300 ${sidebarCollapsed ? 'ml-[68px]' : 'ml-[226px]'}`}>
